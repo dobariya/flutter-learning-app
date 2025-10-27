@@ -8,7 +8,7 @@ class ApiService {
   // For Android Emulator: http://10.0.2.2:5000
   // For iOS Simulator: http://localhost:5000
   // For Physical Device: http://YOUR_LOCAL_IP:5000
-  static const String baseUrl = 'http://localhost:5000/api/auth';
+  static const String baseUrl = 'http://192.168.1.9:5000/api/auth';
 
   final StorageService _storageService = StorageService();
 
@@ -61,6 +61,8 @@ class ApiService {
         }),
       );
 
+      print(response.body);
+
       final responseData = jsonDecode(response.body);
       final authResponse = AuthResponse.fromJson(responseData);
 
@@ -73,7 +75,7 @@ class ApiService {
     } catch (e) {
       return AuthResponse(
         success: false,
-        message: 'Connection error: ${e.toString()}',
+        message: 'Connection error: ${e.toString()+" test"}',
       );
     }
   }
