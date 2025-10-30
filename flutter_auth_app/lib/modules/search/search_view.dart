@@ -1,57 +1,73 @@
-// lib/views/search_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'search_controller.dart' hide SearchController;
+import 'search_controller.dart' show SearchControllerX;
 
-class SearchView extends StatelessWidget {
-  final SearchController controller = Get.lazyPut(SearchController);
-
-  SearchView({super.key});
+class SearchView extends GetView<SearchControllerX> {
+  const SearchView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Example (GetX + MVC)'),
+        title: const Text('Search Example (GetX)'),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Search Box and Button
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Enter search term...',
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) => controller.query.value = value,
-                  ),
+            // Search Box
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: controller.searchItems,
-                  child: const Text('Search'),
-                ),
-              ],
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              ),
+              onChanged: (value) {
+                controller.query.value = value;
+                if (value.isNotEmpty) {
+                  controller.searchItems();
+                } else {
+                  controller.results.clear();
+                }
+              },
+              textInputAction: TextInputAction.search,
+              onSubmitted: (_) => controller.searchItems(),
             ),
             const SizedBox(height: 16),
-
-            // Loading indicator or results
+            
+            // Results
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (controller.results.isEmpty) {
+                if (controller.query.value.isEmpty) {
                   return const Center(
                     child: Text(
-                      'No results found',
-                      style: TextStyle(fontSize: 16),
+                      'Enter a search term',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  );
+                }
+
+                if (controller.results.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.search_off, size: 48, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No results for "${controller.query.value}"',
+                          style: const TextStyle(fontSize: 16, color: Colors.grey),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -61,8 +77,10 @@ class SearchView extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = controller.results[index];
                     return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
                         title: Text(item.title),
+                        leading: const Icon(Icons.search),
                       ),
                     );
                   },

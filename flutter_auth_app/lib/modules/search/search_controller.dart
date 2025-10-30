@@ -2,7 +2,7 @@
 import 'package:get/get.dart';
 import 'search_model.dart';
 
-class SearchController extends GetxController {
+class SearchControllerX extends GetxController {
   /// Text input by user
   var query = ''.obs;
 

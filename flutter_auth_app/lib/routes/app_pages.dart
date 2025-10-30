@@ -4,6 +4,8 @@ import 'package:flutter_auth_app/modules/login/login_binding.dart';
 import 'package:flutter_auth_app/modules/login/login_view.dart';
 import 'package:flutter_auth_app/modules/register/register_binding.dart';
 import 'package:flutter_auth_app/modules/register/register_view.dart';
+import 'package:flutter_auth_app/modules/search/search_binding.dart';
+import 'package:flutter_auth_app/modules/search/search_view.dart';
 import 'package:get/get.dart';
 
 part 'app_routes.dart';
@@ -27,5 +29,10 @@ class AppPages {
       page: () => RegisterView(),
       binding: RegisterBinding(),
     ),
+    GetPage(
+      name: '/search',
+      page: () => const SearchView(),
+      binding: SearchBinding(),
+    )
   ];
 }
