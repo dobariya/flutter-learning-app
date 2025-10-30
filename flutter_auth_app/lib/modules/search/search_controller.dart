@@ -1,13 +1,18 @@
 // lib/controllers/search_controller.dart
 import 'package:get/get.dart';
+import '../../services/api_service.dart';
 import 'search_model.dart';
 
 class SearchControllerX extends GetxController {
+  final _apiService = ApiService();
+  
   /// Text input by user
   var query = ''.obs;
 
   /// Search results list
-  var results = <SearchModel>[].obs;
+  // var results = <SearchModel>[].obs;
+  var results = <String>[].obs;
+
 
   /// Loading state
   var isLoading = false.obs;
@@ -23,21 +28,35 @@ class SearchControllerX extends GetxController {
     SearchModel(title: 'Strawberry'),
   ];
 
-  /// Function to simulate a search
+  /// Search for hotels using the API
   Future<void> searchItems() async {
-    if (query.value.isEmpty) return;
+    if (query.value.isEmpty) {
+      results.clear();
+      return;
+    }
 
-    isLoading.value = true;
+    try {
+      isLoading.value = true;
+      final response = await _apiService.searchHotel(query.value);
 
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
+      
+      // Map the API response to your results list
+      results.value = response
+          .map<String>((item) => item['display_name']?.toString() ?? 'No name')
+          .toList();
 
-    // Filter results based on the query
-    results.value = allItems
-        .where((item) =>
-            item.title.toLowerCase().contains(query.value.toLowerCase()))
-        .toList();
+      var hotels = response
+          .map<String>((item) => item['type']?.toString() ?? 'No name')
+          .toList();
+          
+      print (hotels);
 
-    isLoading.value = false;
+    } catch (e) {
+      print('Error searching hotels: $e');
+      // Optionally show error to user
+      // Get.snackbar('Error', 'Failed to search for hotels');
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

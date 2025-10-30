@@ -79,7 +79,7 @@ class SearchView extends GetView<SearchControllerX> {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
-                        title: Text(item.title),
+                        title: Text(item),
                         leading: const Icon(Icons.search),
                       ),
                     );

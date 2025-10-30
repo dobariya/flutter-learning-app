@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:convert' show utf8;
 import 'package:http/http.dart' as http;
 import '../models/auth_response.dart';
 import 'storage_service.dart';
@@ -9,8 +10,45 @@ class ApiService {
   // For iOS Simulator: http://localhost:5000
   // For Physical Device: http://YOUR_LOCAL_IP:5000
   static const String baseUrl = 'http://192.168.1.9:5000/api/auth';
+  static const String apiToken = "pk.ea55c608a318e79887c7663b15323ad8";
+  static const String apiurl = "https://api.locationiq.com/v1/autocomplete?key=$apiToken";
 
   final StorageService _storageService = StorageService();
+
+  // Searches for hotels using LocationIQ autocomplete API
+  Future<List<dynamic>> searchHotel(String query) async {
+    if (query.isEmpty) return [];
+    
+    try {
+      // Create URI with proper query parameters
+      final uri = Uri.https(
+        'api.locationiq.com',
+        '/v1/autocomplete',
+        {
+          'key': apiToken,
+          'q': query,
+          'limit': '20',
+          'dedupe': '1',
+          'tag': 'tourism:hotel',
+          'countrycodes': 'us'
+        },
+      );
+
+      final response = await http.get(uri);
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+        return data;
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception('API Error: ${errorData['error'] ?? 'Unknown error'}');
+      }
+    } catch (e) {
+      print('Error searching hotels: $e');
+      rethrow;
+    }
+  }
+
 
   // Register user
   Future<AuthResponse> register({
