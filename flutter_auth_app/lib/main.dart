@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
-import 'services/api_service.dart';
-import 'services/storage_service.dart';
+import 'package:get/get.dart';
+import 'package:flutter_auth_app/routes/app_pages.dart';
+import 'package:flutter_auth_app/services/api_service.dart';
+import 'package:flutter_auth_app/services/storage_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,14 +13,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Auth App',
+    return GetMaterialApp(
+      title: 'GetX Modular App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
     );
   }
 }
@@ -64,11 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (response.success && response.user != null) {
       // Token is valid, navigate to home
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(user: response.user!),
-        ),
-      );
+      Get.offAllNamed(Routes.HOME);
     } else {
       // Token is invalid, navigate to login
       _navigateToLogin();
@@ -76,11 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateToLogin() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
-    );
+    Get.offAllNamed(Routes.LOGIN);
   }
 
   @override

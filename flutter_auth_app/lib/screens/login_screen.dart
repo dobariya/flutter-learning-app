@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_app/routes/app_pages.dart';
+import 'package:get/get.dart';
 import '../services/api_service.dart';
-import 'register_screen.dart';
-import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -55,11 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       // Navigate to home screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(user: response.user!),
-        ),
-      );
+      Get.offAllNamed(Routes.HOME, arguments: response.user);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -212,11 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
-                              ),
-                            );
+                            Get.toNamed(Routes.REGISTER);
                           },
                           child: const Text(
                             'Register',

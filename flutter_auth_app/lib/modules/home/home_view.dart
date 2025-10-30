@@ -1,80 +1,23 @@
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
-import '../services/api_service.dart';
-import 'login_screen.dart';
-
 import 'package:get/get.dart';
+import 'home_controller.dart';
 
-class HomeScreen extends StatefulWidget {
-  final User user;
+class HomeView extends GetView<HomeController> {
+  final dynamic userData;
 
-  const HomeScreen({super.key, required this.user});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final _apiService = ApiService();
-  bool _isLoading = false;
-  String? _profileData;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadProfile();
-  }
-
-  Future<void> _loadProfile() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final profile = await _apiService.getProfile();
-      setState(() {
-        _profileData = 'Protected data loaded:\n${profile.toString()}';
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _profileData = 'Error loading profile: $e';
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _logout() async {
-    await _apiService.logout();
-
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Logged out successfully'),
-        backgroundColor: Colors.green,
-      ),
-    );
-
-    // Navigate to login screen
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
-    );
-  }
+  const HomeView({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
-        backgroundColor: Colors.purple.shade600,
+        backgroundColor: const Color.fromARGB(255, 17, 73, 83),
         foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout,
+            onPressed: controller.logout,
             tooltip: 'Logout',
           ),
         ],
@@ -109,8 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.purple.shade600,
-                          Colors.blue.shade400,
+                          const Color.fromRGBO(11, 41, 65, 1),
+                          const Color.fromARGB(255, 79, 233, 212),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(16),
@@ -137,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          widget.user.username,
+                          controller.user.username,
                           style: const TextStyle(
                             fontSize: 20,
                             color: Colors.white70,
@@ -168,12 +111,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 16),
                         _buildInfoRow(
-                            Icons.badge, 'ID', widget.user.id.toString()),
+                            Icons.badge, 'ID', controller.user.id.toString()),
                         const SizedBox(height: 12),
                         _buildInfoRow(
-                            Icons.person, 'Username', widget.user.username),
+                            Icons.person, 'Username', controller.user.username),
                         const SizedBox(height: 12),
-                        _buildInfoRow(Icons.email, 'Email', widget.user.email),
+                        _buildInfoRow(
+                            Icons.email, 'Email', controller.user.email),
                       ],
                     ),
                   ),
@@ -202,19 +146,23 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.refresh),
-                              onPressed: _loadProfile,
+                              onPressed: controller.loadProfile,
                               tooltip: 'Refresh',
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        if (_isLoading)
-                          const Center(child: CircularProgressIndicator())
-                        else
-                          Text(
-                            _profileData ?? 'No data loaded',
-                            style: const TextStyle(fontSize: 14),
-                          ),
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else {
+                            return Text(
+                              controller.profileData.value,
+                              style: const TextStyle(fontSize: 14),
+                            );
+                          }
+                        }),
                       ],
                     ),
                   ),
@@ -222,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 24),
                 // Logout Button
                 ElevatedButton.icon(
-                  onPressed: _logout,
+                  onPressed: controller.logout,
                   icon: const Icon(Icons.logout),
                   label: const Text('Logout'),
                   style: ElevatedButton.styleFrom(
