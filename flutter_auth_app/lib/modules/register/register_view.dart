@@ -65,28 +65,40 @@ class RegisterView extends GetView<RegisterController> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    SearchWidget(
-                      hintText: 'Search for your location...',
-                      onItemSelected: (selectedLocation) {
-                        controller.locationController.text = selectedLocation;
-                        // Trigger form validation to clear any previous error
-                        controller.formKey.currentState?.validate();
-                      },
+                    Stack(
+                      children: [
+                        // The search widget
+                        SearchWidget(
+                          hintText: 'Search for your location...',
+                          textController: controller.locationController,
+                          onItemSelected: (selectedLocation) {
+                            controller.locationController.text = selectedLocation;
+                            // Clear any previous error
+                            controller.formKey.currentState?.validate();
+                          },
+                          margin: const EdgeInsets.only(bottom: 8),
+                        ),
+                        // Error message
+                        Obx(() {
+                          if (controller.locationController.text.isEmpty && 
+                              controller.formSubmitted.value) {
+                            return Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: -20, // Position below the search widget
+                              child: const Padding(
+                                padding: EdgeInsets.only(left: 8.0, top: 4.0),
+                                child: Text(
+                                  'Please select a location',
+                                  style: TextStyle(color: Colors.orange, fontSize: 12),
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        }),
+                      ],
                     ),
-                    Obx(() {
-                      // Show error if location is empty and form has been submitted
-                      if (controller.locationController.text.isEmpty && 
-                          controller.formSubmitted.value) {
-                        return const Padding(
-                          padding: EdgeInsets.only(left: 8.0, top: 4.0),
-                          child: Text(
-                            'Please select a location',
-                            style: TextStyle(color: Colors.orange, fontSize: 12),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    }),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: controller.usernameController,
