@@ -46,15 +46,16 @@ class SearchView extends GetView<SearchControllerX> {
               textInputAction: TextInputAction.search,
               onSubmitted: (_) => controller.searchItems(),
             ),
+
             const SizedBox(height: 16),
 
             // Results
-            Expanded(
+            Expanded (
               child: Obx(() {
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
+              
                 if (controller.query.value.isEmpty) {
                   return const Center(
                     child: Text(
@@ -63,7 +64,7 @@ class SearchView extends GetView<SearchControllerX> {
                     ),
                   );
                 }
-
+              
                 if (controller.results.isEmpty) {
                   return Center(
                     child: Column(
@@ -82,18 +83,20 @@ class SearchView extends GetView<SearchControllerX> {
                     ),
                   );
                 }
-
+              
                 return ListView.builder(
                   itemCount: controller.results.length,
                   itemBuilder: (context, index) {
                     final item = controller.results[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        title: Text(item),
-                        leading: const Icon(Icons.search),
-                      ),
-                    );
+                    return GestureDetector(
+                        onTap: () => controller.getAddress(item),
+                        child: Card(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          child: ListTile(
+                            title: Text(item),
+                            leading: const Icon(Icons.search),
+                          ),
+                        ));
                   },
                 );
               }),

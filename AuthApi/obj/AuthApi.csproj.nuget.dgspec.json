@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj": {}
+    "E:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj": {}
   },
   "projects": {
-    "e:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj": {
+    "E:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj",
+        "projectUniqueName": "E:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj",
         "projectName": "AuthApi",
-        "projectPath": "e:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj",
+        "projectPath": "E:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj",
         "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "e:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\obj\\",
+        "outputPath": "E:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
