@@ -37,6 +37,9 @@ class SearchControllerX extends GetxController {
 
     try {
       isLoading.value = true;
+
+      await Future.delayed(const Duration(seconds: 2));
+
       final response = await _apiService.searchHotel(query.value);
 
       

@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'search_controller.dart' show SearchControllerX;
+
+String lastValue = "";
 
 class SearchView extends GetView<SearchControllerX> {
   const SearchView({super.key});
@@ -26,10 +30,15 @@ class SearchView extends GetView<SearchControllerX> {
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
               ),
-              onChanged: (value) {
+              onChanged: (value) async {
                 controller.query.value = value;
+                lastValue = value;
+
                 if (value.isNotEmpty) {
-                  controller.searchItems();
+                  await Future.delayed(const Duration(seconds: 2));
+                  if (lastValue == value) {
+                    controller.searchItems();
+                  }
                 } else {
                   controller.results.clear();
                 }
@@ -38,7 +47,7 @@ class SearchView extends GetView<SearchControllerX> {
               onSubmitted: (_) => controller.searchItems(),
             ),
             const SizedBox(height: 16),
-            
+
             // Results
             Expanded(
               child: Obx(() {
@@ -60,11 +69,13 @@ class SearchView extends GetView<SearchControllerX> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.search_off, size: 48, color: Colors.grey),
+                        const Icon(Icons.search_off,
+                            size: 48, color: Colors.grey),
                         const SizedBox(height: 16),
                         Text(
                           'No results for "${controller.query.value}"',
-                          style: const TextStyle(fontSize: 16, color: Colors.grey),
+                          style:
+                              const TextStyle(fontSize: 16, color: Colors.grey),
                           textAlign: TextAlign.center,
                         ),
                       ],
