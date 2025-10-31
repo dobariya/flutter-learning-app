@@ -9,11 +9,13 @@ class RegisterController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final locationController = TextEditingController();
   final apiService = ApiService();
 
   var isLoading = false.obs;
   var obscurePassword = true.obs;
   var obscureConfirmPassword = true.obs;
+  var formSubmitted = false.obs;
 
   @override
   void onClose() {
@@ -21,6 +23,7 @@ class RegisterController extends GetxController {
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    locationController.dispose();
     super.onClose();
   }
 
@@ -33,6 +36,8 @@ class RegisterController extends GetxController {
   }
 
   Future<void> register() async {
+    formSubmitted.value = true;
+    
     if (!formKey.currentState!.validate()) {
       return;
     }
@@ -43,6 +48,7 @@ class RegisterController extends GetxController {
       username: usernameController.text.trim(),
       email: emailController.text.trim(),
       password: passwordController.text,
+      location: locationController.text.trim(),
     );
 
     isLoading.value = false;

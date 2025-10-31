@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'register_controller.dart';
+import '../../widgets/search_widget.dart';
 
 class RegisterView extends GetView<RegisterController> {
   const RegisterView({super.key});
@@ -54,6 +55,39 @@ class RegisterView extends GetView<RegisterController> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 40),
+                    
+                    const Text(
+                      'Location',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SearchWidget(
+                      hintText: 'Search for your location...',
+                      onItemSelected: (selectedLocation) {
+                        controller.locationController.text = selectedLocation;
+                        // Trigger form validation to clear any previous error
+                        controller.formKey.currentState?.validate();
+                      },
+                    ),
+                    Obx(() {
+                      // Show error if location is empty and form has been submitted
+                      if (controller.locationController.text.isEmpty && 
+                          controller.formSubmitted.value) {
+                        return const Padding(
+                          padding: EdgeInsets.only(left: 8.0, top: 4.0),
+                          child: Text(
+                            'Please select a location',
+                            style: TextStyle(color: Colors.orange, fontSize: 12),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: controller.usernameController,
                       decoration: InputDecoration(

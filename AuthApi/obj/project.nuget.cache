@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "juDT6ut2Ars=",
+  "dgSpecHash": "bu4+VdolOfo=",
   "success": true,
-  "projectFilePath": "E:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj",
+  "projectFilePath": "e:\\Jay\\flutter learning\\mobile_login_app\\flutter-learning-app\\AuthApi\\AuthApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ADMIN\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.0\\microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",

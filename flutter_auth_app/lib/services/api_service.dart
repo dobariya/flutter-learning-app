@@ -54,7 +54,7 @@ class ApiService {
   Future<AuthResponse> register({
     required String username,
     required String email,
-    required String password,
+    required String password, required String location,
   }) async {
     try {
       final response = await http.post(

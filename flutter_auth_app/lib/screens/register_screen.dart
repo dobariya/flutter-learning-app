@@ -14,6 +14,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _locationController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _apiService = ApiService();
 
@@ -26,6 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _locationController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
@@ -43,6 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       username: _usernameController.text.trim(),
       email: _emailController.text.trim(),
       password: _passwordController.text,
+      location: _locationController.text.trim(),
     );
 
     setState(() {
@@ -205,6 +208,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         }
                         if (value.length < 6) {
                           return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // Location Field
+                    TextFormField(
+                      controller: _locationController,
+                      decoration: InputDecoration(
+                        labelText: 'Location',
+                        prefixIcon: const Icon(Icons.location_on),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your location';
                         }
                         return null;
                       },

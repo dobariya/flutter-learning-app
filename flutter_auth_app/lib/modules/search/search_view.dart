@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'search_controller.dart' show SearchControllerX;
 
@@ -16,111 +17,113 @@ class SearchView extends GetView<SearchControllerX> {
         title: const Text('Search Example (GetX)'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                // Search Box
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                  ),
-                  onChanged: (value) async {
-                    controller.query.value = value;
-                    lastValue = value;
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        margin: const EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  // Search Box
 
-                    if (value.isNotEmpty) {
-                      await Future.delayed(const Duration(seconds: 2));
-                      if (lastValue == value) {
-                        controller.searchItems();
-                      }
-                    } else {
-                      controller.results.clear();
-                    }
-                  },
-                  textInputAction: TextInputAction.search,
-                  onSubmitted: (_) => controller.searchItems(),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  color: Colors.blue,
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Blue Box',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 16, width: double.infinity),
 
-            // Results
-            Positioned(
-              top:
-                  70, // Adjust this value based on your layout (height of search bar + padding)
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Obx(() {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                  // Container(
+                  //   height: 100,
+                  //   width: double.infinity,
+                  //   color: Colors.blue,
+                  //   alignment: Alignment.center,
+                  //   child: const Text(
+                  //     'Blue Box',
+                  //     style: TextStyle(color: Colors.white, fontSize: 18),
+                  //   ),
+                  // ),
+                ],
+              ),
 
-                if (controller.query.value.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'Enter a search term',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  );
-                }
-
-                if (controller.results.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.search_off,
-                            size: 48, color: Colors.grey),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No results for "${controller.query.value}"',
-                          style:
-                              const TextStyle(fontSize: 16, color: Colors.grey),
-                          textAlign: TextAlign.center,
+              // Results
+              Positioned(
+                top:
+                    20, // Adjust this value based on your layout (height of search bar + padding)
+                left: 100,
+                right: 100,
+                bottom: 0,
+                child: Column(
+                  children: [
+                    // Example: Optional title or search bar
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search...',
+                        fillColor: const Color.fromARGB(0, 0, 0, 0),
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  itemCount: controller.results.length,
-                  itemBuilder: (context, index) {
-                    final item = controller.results[index];
-                    return GestureDetector(
-                      onTap: () => controller.getAddress(item),
-                      child: Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: ListTile(
-                          title: Text(item),
-                          leading: const Icon(Icons.search),
-                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
                       ),
-                    );
-                  },
-                );
-              }),
-            ),
-          ],
+                      onChanged: (value) async {
+                        controller.query.value = value;
+                        lastValue = value;
+
+                        if (value.isNotEmpty) {
+                          await Future.delayed(const Duration(seconds: 2));
+                          if (lastValue == value) {
+                            controller.searchItems();
+                          }
+                        } else {
+                          controller.results.clear();
+                        }
+                      },
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (_) => controller.searchItems(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    Expanded(
+                      child: Obx(() {
+                        if (controller.isLoading.value) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        // If no results
+                        if (controller.results.isEmpty) {
+                          return const Center(
+                            child: Text('No results found'),
+                          );
+                        }
+
+                        // ListView for displaying items
+                        return ListView.builder(
+                          itemCount: controller.results.length,
+                          itemBuilder: (context, index) {
+                            final item = controller.results[index];
+                            return GestureDetector(
+                              onTap: () => controller.getAddress(item),
+                              child: Card(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                child: ListTile(
+                                  title: Text(item),
+                                  leading: const Icon(Icons.search),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
