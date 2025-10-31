@@ -18,44 +18,62 @@ class SearchView extends GetView<SearchControllerX> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: Stack(
           children: [
-            // Search Box
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0),
-              ),
-              onChanged: (value) async {
-                controller.query.value = value;
-                lastValue = value;
+            Column(
+              children: [
+                // Search Box
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  ),
+                  onChanged: (value) async {
+                    controller.query.value = value;
+                    lastValue = value;
 
-                if (value.isNotEmpty) {
-                  await Future.delayed(const Duration(seconds: 2));
-                  if (lastValue == value) {
-                    controller.searchItems();
-                  }
-                } else {
-                  controller.results.clear();
-                }
-              },
-              textInputAction: TextInputAction.search,
-              onSubmitted: (_) => controller.searchItems(),
+                    if (value.isNotEmpty) {
+                      await Future.delayed(const Duration(seconds: 2));
+                      if (lastValue == value) {
+                        controller.searchItems();
+                      }
+                    } else {
+                      controller.results.clear();
+                    }
+                  },
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (_) => controller.searchItems(),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  height: 100,
+                  width: double.infinity,
+                  color: Colors.blue,
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'Blue Box',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 16),
-
             // Results
-            Expanded (
+            Positioned(
+              top:
+                  70, // Adjust this value based on your layout (height of search bar + padding)
+              left: 0,
+              right: 0,
+              bottom: 0,
               child: Obx(() {
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-              
+
                 if (controller.query.value.isEmpty) {
                   return const Center(
                     child: Text(
@@ -64,7 +82,7 @@ class SearchView extends GetView<SearchControllerX> {
                     ),
                   );
                 }
-              
+
                 if (controller.results.isEmpty) {
                   return Center(
                     child: Column(
@@ -83,20 +101,21 @@ class SearchView extends GetView<SearchControllerX> {
                     ),
                   );
                 }
-              
+
                 return ListView.builder(
                   itemCount: controller.results.length,
                   itemBuilder: (context, index) {
                     final item = controller.results[index];
                     return GestureDetector(
-                        onTap: () => controller.getAddress(item),
-                        child: Card(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: ListTile(
-                            title: Text(item),
-                            leading: const Icon(Icons.search),
-                          ),
-                        ));
+                      onTap: () => controller.getAddress(item),
+                      child: Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          title: Text(item),
+                          leading: const Icon(Icons.search),
+                        ),
+                      ),
+                    );
                   },
                 );
               }),
