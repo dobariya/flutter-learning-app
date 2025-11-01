@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'register_controller.dart';
 import '../../widgets/search_widget.dart';
+import 'package:searchfield/searchfield.dart';
+
+String lastValue = "";
 
 class RegisterView extends GetView<RegisterController> {
-  const RegisterView({super.key});
+  RegisterView({super.key});
+
+  final Rx<SearchFieldListItem<Hotel>?> selectedValue =
+      Rx<SearchFieldListItem<Hotel>?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +61,6 @@ class RegisterView extends GetView<RegisterController> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 40),
-                    
                     const Text(
                       'Location',
                       style: TextStyle(
@@ -65,40 +70,59 @@ class RegisterView extends GetView<RegisterController> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Stack(
-                      children: [
-                        // The search widget
-                        SearchWidget(
-                          hintText: 'Search for your location...',
-                          textController: controller.locationController,
-                          onItemSelected: (selectedLocation) {
-                            controller.locationController.text = selectedLocation;
-                            // Clear any previous error
-                            controller.formKey.currentState?.validate();
-                          },
-                          margin: const EdgeInsets.only(bottom: 8),
+                    
+                    SearchField<String>(
+                      searchInputDecoration: SearchInputDecoration(
+                        hintText: 'Search for Hotel',
+                        fillColor: Color.fromARGB(249, 255, 255, 255),
+                        prefixIcon: Icon(Icons.search),
+                        suffix: Icon(Icons.expand_more),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        // Error message
-                        Obx(() {
-                          if (controller.locationController.text.isEmpty && 
-                              controller.formSubmitted.value) {
-                            return Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: -20, // Position below the search widget
-                              child: const Padding(
-                                padding: EdgeInsets.only(left: 8.0, top: 4.0),
-                                child: Text(
-                                  'Please select a location',
-                                  style: TextStyle(color: Colors.orange, fontSize: 12),
-                                ),
-                              ),
-                            );
+                      ),
+                      onSearchTextChanged: (query) async {
+                        if (query.isNotEmpty) {
+                          controller.query.value = query;
+                          lastValue = query;
+                          if (query.isNotEmpty) {
+                            await Future.delayed(const Duration(seconds: 2));
+                            if (lastValue == query) {
+                              await controller.searchItems();
+                            }
+                          } else {
+                            controller.results.clear();
                           }
-                          return const SizedBox.shrink();
-                        }),
-                      ],
+                        }
+                        return controller.hotelItems
+                            .map((searchItem) => SearchFieldListItem<String>(
+                                  searchItem.item?.name ??
+                                      'No Name', // Added null check with fallback
+                                  value: searchItem.item?.address ??
+                                      'No Address', // Also added for consistency
+                                  child: Text(searchItem.item?.name ??
+                                      'No Name'), // And here
+                                ))
+                            .toList();
+                      },
+                      //selectedValue: selectedValue.value,
+                      onSuggestionTap: (SearchFieldListItem<String> item) {
+                        //selectedValue.value = item;
+                        print('Selected: ${item.searchKey}');
+                        print('Selected value: ${item.value}');
+
+                        // controller.getAddress(item.value);
+                      },
+                      suggestions: controller.results
+                          .map((hotel) => SearchFieldListItem<String>(
+                                // Changed from Hotel to String
+                                hotel.name, // Use hotel.name as the value
+                                child: Text(hotel.name),
+                              ))
+                          .toList(),
+                      suggestionState: Suggestion.expand,
                     ),
+
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: controller.usernameController,

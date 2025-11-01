@@ -5,6 +5,13 @@ import 'package:get/get.dart';
 import '../../services/api_service.dart';
 import 'search_model.dart';
 
+class Hotel {
+  String name;
+  String address;
+
+  Hotel(this.name, this.address);
+}
+
 class SearchControllerX extends GetxController {
   final _apiService = ApiService();
 
@@ -22,6 +29,38 @@ class SearchControllerX extends GetxController {
   var isLoading = false.obs;
 
   /// Dummy data to search from
+
+  void searchItem(String searchQuery) async {
+    if (searchQuery.isEmpty) {
+      results.value = [];
+      return;
+    }
+    
+    try {
+      isLoading.value = true;
+      // Update the query
+      query.value = searchQuery;
+      
+      // Call your API or filter logic here
+      // For example:
+      // final response = await _apiService.searchHotels(searchQuery);
+      // results.value = response.map((item) => item.name).toList();
+      
+      // For now, let's simulate an API call
+      await Future.delayed(Duration(milliseconds: 500));
+      results.value = [
+        '$searchQuery Hotel 1',
+        '$searchQuery Hotel 2',
+        '$searchQuery Hotel 3',
+      ];
+    } catch (e) {
+      print('Error searching: $e');
+      results.value = [];
+    } finally {
+      isLoading.value = false;
+    }
+  } 
+  
 
   /// Search for hotels using the API
   Future<void> searchItems() async {
@@ -64,7 +103,8 @@ class SearchControllerX extends GetxController {
         .toList();
 
     address.value = filtered; // address is RxList<Map<String, dynamic>>
-    data.assignAll(address.firstOrNull ?? {}); // safely assign first address map
+    data.assignAll(
+        address.firstOrNull ?? {}); // safely assign first address map
 
     print(data["city"]);
     print(data["country"]);

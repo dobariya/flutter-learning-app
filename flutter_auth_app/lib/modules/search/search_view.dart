@@ -52,7 +52,7 @@ class SearchView extends GetView<SearchControllerX> {
               Positioned(
                 top:
                     20, // Adjust this value based on your layout (height of search bar + padding)
-                left: 100,
+                left: 0,
                 right: 100,
                 bottom: 0,
                 child: Column(
